@@ -1,0 +1,60 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-dismissible alert-success">
+      <button type="button" class="close" data-dismiss="alert">
+      ×
+      </button>
+      <strong>{{message}}</strong>
+    </div>
+ {% endfor %}
+{% endif %}
+{% block content %}
+{% csrf_token %}
+<body style="background-color: lightgray" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<div class="alert alert-primary" role="alert">
+  <h5 style = "text-align:center">Click on the Pay to process Payment.</h5>
+</div>
+  <center><button type="submit" id="rzp-button1" class=" btn btn-success ">Pay</button></center>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+    "key": "{{api_key}}",
+    "name": "Test Razor Pay",
+    "description": "Test Transaction",
+    "image": "https://www.freepnglogos.com/uploads/shopping-cart-png/shopping-cart-svg-png-icon-download-28.png",
+    "amount":"{{amount}}",
+    "order_id": "{{order_id}}",
+    "handler": function (response){
+      alert("Payment Successfull");
+      window.location.href = '/orders'
+  },
+    "prefill": {
+      "name": "Rohit Raut",
+      "email": "rohitraut@test.com",
+      "contact": "1231231234"
+    },
+    "notes": {
+      "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+      "color": "#3399cc"
+    }
+  };
+  var rzp1 = new Razorpay(options);
+  rzp1.on('payment.failed', function (response){
+    alert("Payment Failed");
+  });
+  document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+  }
+  </script>
+  {% endblock %}
+</body>
+  </html>
